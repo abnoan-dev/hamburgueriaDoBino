@@ -1,90 +1,80 @@
-#include <stdio.h>
-#include <string.h>
 #include "hamburgueria.h"
+#include <stdio.h>
 
 int main() {
-    User users[MAX_USERS];
-    int numUsers = 0;
-    Item cardapio[MAX_ITEMS];
-    int numCardapio = 0;
-    Item carrinho[MAX_ITEMS];
+    UserNode* headUsuarios = NULL;
+    ItemNode* cardapio = NULL;
+    ItemNode* carrinho = NULL;
+     ItemNode* itens = NULL;
+    int numUsuarios = 0;
     int numCarrinho = 0;
     int opcao;
-    
-    // Adicionando hamburgueres ao cardápio
-    strcpy(cardapio[numCardapio].nome, "X-Bacon");
-    cardapio[numCardapio].preco = 15.0;
-    cardapio[numCardapio].quantidade = 50;
-    numCardapio++;
 
-    strcpy(cardapio[numCardapio].nome, "X-Salada");
-    cardapio[numCardapio].preco = 12.0;
-    cardapio[numCardapio].quantidade = 40;
-    numCardapio++;
+       // Adicionando hamburgueres ao cardápio
+    Item novoItem1 = {"X-Bacon", 15.0, 50};
+    Item novoItem2 = {"X-Salada", 12.0, 40};
+    Item novoItem3 = {"X-Tudo", 18.0, 30};
+    Item novoItem4 = {"Vegetariano", 13.0, 35};
+    Item novoItem5 = {"Cheeseburger", 10.0, 45};
 
-    strcpy(cardapio[numCardapio].nome, "X-Tudo");
-    cardapio[numCardapio].preco = 18.0;
-    cardapio[numCardapio].quantidade = 30;
-    numCardapio++;
+    adicionarItem(&itens, novoItem1);
+    adicionarItem(&itens, novoItem2);
+    adicionarItem(&itens, novoItem3);
+    adicionarItem(&itens, novoItem4);
+    adicionarItem(&itens, novoItem5);
 
-    strcpy(cardapio[numCardapio].nome, "Vegetariano");
-    cardapio[numCardapio].preco = 13.0;
-    cardapio[numCardapio].quantidade = 35;
-    numCardapio++;
 
-    strcpy(cardapio[numCardapio].nome, "Cheeseburger");
-    cardapio[numCardapio].preco = 10.0;
-    cardapio[numCardapio].quantidade = 45;
-    numCardapio++;
-
-    // Carregar usuários do arquivo
-    numUsers = carregarUsuarios(users);
-
-    // Boas-vindas
+    carregarUsuarios(&headUsuarios);
+    carregarItens(&cardapio);
     boasVindas();
 
-    // Loop do menu
     do {
         menu();
-        printf("Escolha uma opcao: ");
+        printf("Escolha uma opção: ");
         scanf("%d", &opcao);
         switch (opcao) {
             case 1:
-                cadastrarUsuario(users, &numUsers);
+                cadastrarUsuario(&headUsuarios, &numUsuarios);
                 break;
             case 2: {
                 char username[MAX_LENGTH];
-                printf("Digite o nome de usuario para buscar: ");
+                printf("Digite o nome de usuário a ser buscado: ");
                 scanf("%s", username);
-                buscarCliente(users, numUsers, username);
+                buscarCliente(headUsuarios, username);
                 break;
             }
             case 3:
-                listarCardapio(cardapio, numCardapio);
+                listarCardapio(cardapio);
                 break;
             case 4:
-                adicionarAoCarrinho(cardapio, numCardapio, carrinho, &numCarrinho);
+                adicionarAoCarrinho(cardapio, &carrinho, &numCarrinho);
                 break;
             case 5:
-                excluirPedido(carrinho, &numCarrinho);
+                excluirPedido(&carrinho, &numCarrinho);
                 break;
             case 6:
-                visualizarCarrinho(carrinho, numCarrinho);
+                visualizarCarrinho(carrinho);
                 break;
             case 7:
-                editarPedido(cardapio, numCardapio, carrinho, &numCarrinho);
+                editarPedido(cardapio, &carrinho, &numCarrinho);
                 break;
-            case 8:
+             case 8:
+                ordenarUsuariosAlfabeticamente(&headUsuarios);
+                salvarUsuarios(headUsuarios);
+                printf("Usuários ordenados em ordem alfabética e salvos no arquivo.\n");
+                break;
+            case 9:
                 printf("Saindo...\n");
                 break;
             default:
-                printf("Opcao invalida. Tente novamente.\n");
+                printf("Opção inválida. Tente novamente.\n");
                 break;
         }
-    } while (opcao!= 8);
+    } while (opcao != 9);
 
-    // Salvar itens em arquivo
-    salvarItens(cardapio, numCardapio);
+    salvarUsuarios(headUsuarios);
+    salvarItens(cardapio);
+    escreverCarrinhoEmArquivo(carrinho);
 
     return 0;
 }

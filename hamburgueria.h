@@ -1,7 +1,7 @@
 #ifndef HAMBURGUERIA_H
 #define HAMBURGUERIA_H
 
-#define MAX_USERS 10
+#define MAX_USERS 100
 #define MAX_ITEMS 100
 #define MAX_LENGTH 100
 
@@ -17,18 +17,32 @@ typedef struct {
     int quantidade;
 } Item;
 
-void salvarUsuarios(User users[], int numUsers);
-int carregarUsuarios(User users[]);
-void salvarItens(Item items[], int numItems);
-int carregarItens(Item items[]);
+typedef struct UserNode {
+    User user;
+    struct UserNode* next;
+} UserNode;
+
+typedef struct ItemNode {
+    Item item;
+    struct ItemNode* next;
+} ItemNode;
+
+void adicionarUsuario(UserNode** head, User novoUsuario);
+void adicionarItem(ItemNode** head, Item novoItem);
+void salvarUsuarios(UserNode* head);
+void escreverCarrinhoEmArquivo(ItemNode* carrinho);
+void ordenarUsuariosAlfabeticamente(UserNode** head);
+void carregarUsuarios(UserNode** head);
+void salvarItens(ItemNode* head);
+void carregarItens(ItemNode** head);
 void boasVindas();
 void menu();
-void cadastrarUsuario(User users[], int *numUsers);
-int buscarCliente(User users[], int numUsers, char *username);
-void listarCardapio(Item items[], int numItems);
-void adicionarAoCarrinho(Item cardapio[], int numItems, Item carrinho[], int *numCarrinho);
-void excluirPedido(Item carrinho[], int *numCarrinho);
-void visualizarCarrinho(Item carrinho[], int numCarrinho);
-void editarPedido(Item cardapio[], int numCardapio, Item carrinho[], int *numCarrinho);
+void cadastrarUsuario(UserNode** head, int *numUsers);
+int buscarCliente(UserNode* head, char *username);
+void listarCardapio(ItemNode* head);
+void adicionarAoCarrinho(ItemNode* cardapio, ItemNode** carrinho, int *numCarrinho);
+void excluirPedido(ItemNode** carrinho, int *numCarrinho);
+void visualizarCarrinho(ItemNode* carrinho);
+void editarPedido(ItemNode* cardapio, ItemNode** carrinho, int *numCarrinho);
 
 #endif /* HAMBURGUERIA_H */
